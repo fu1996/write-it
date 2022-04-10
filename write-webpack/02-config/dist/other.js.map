@@ -1,0 +1,1 @@
+{"version":3,"file":"other.js","mappings":"AAAAA,QAAQC,IAAI","sources":["webpack://02-config/./src/other.js"],"sourcesContent":["console.log('other')"],"names":["console","log"],"sourceRoot":""}

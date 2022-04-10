@@ -1,0 +1,40 @@
+{
+  "name": "03-optimization",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "webpack-dev-server",
+    "build": "webpack",
+    "react": "webpack --config webpack.config.react.js",
+    "antd": "webpack --config webpack.config.antd.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@osui/ui": "^1.1.6",
+    "antd": "^4.16.13",
+    "css-loader": "^6.2.0",
+    "formik": "^2.2.9",
+    "jquery": "^3.6.0",
+    "less": "^4.1.1",
+    "less-loader": "^10.0.1",
+    "moment": "^2.29.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "redux": "^4.1.1",
+    "style-loader": "^3.2.1",
+    "webpack": "^5.52.0",
+    "webpack-cli": "^4.8.0",
+    "webpack-dev-server": "^4.1.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.15.4",
+    "@babel/preset-env": "^7.15.4",
+    "@babel/preset-react": "^7.14.5",
+    "babel-loader": "^8.2.2",
+    "html-webpack-plugin": "^5.3.2",
+    "speed-measure-webpack-plugin": "^1.5.0"
+  }
+}

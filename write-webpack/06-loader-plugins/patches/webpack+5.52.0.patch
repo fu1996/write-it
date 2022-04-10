@@ -1,0 +1,214 @@
+diff --git a/node_modules/webpack/lib/Compiler.js b/node_modules/webpack/lib/Compiler.js
+index 289d360..5ece047 100644
+--- a/node_modules/webpack/lib/Compiler.js
++++ b/node_modules/webpack/lib/Compiler.js
+@@ -411,7 +411,7 @@ class Compiler {
+ 		}
+ 
+ 		let logger;
+-
++		// 最后的回调函数
+ 		const finalCallback = (err, stats) => {
+ 			if (logger) logger.time("beginIdle");
+ 			this.idle = true;
+@@ -423,13 +423,14 @@ class Compiler {
+ 				this.hooks.failed.call(err);
+ 			}
+ 			if (callback !== undefined) callback(err, stats);
++			// afterDone 构建结束的hook
+ 			this.hooks.afterDone.call(stats);
+ 		};
+ 
+ 		const startTime = Date.now();
+ 
+ 		this.running = true;
+-
++		// 编译完成的回调函数
+ 		const onCompiled = (err, compilation) => {
+ 			if (err) return finalCallback(err);
+ 
+@@ -496,15 +497,16 @@ class Compiler {
+ 		};
+ 
+ 		const run = () => {
++			// Compiler 正式启动前的 hook
+ 			this.hooks.beforeRun.callAsync(this, err => {
+ 				if (err) return finalCallback(err);
+-
++				// Compiler 正式启动的 hook
+ 				this.hooks.run.callAsync(this, err => {
+ 					if (err) return finalCallback(err);
+-
++					// 调用 Compiler 的 readRecords
+ 					this.readRecords(err => {
+ 						if (err) return finalCallback(err);
+-
++						// 调用 compile 编译方法 传入onCompiled 回调函数
+ 						this.compile(onCompiled);
+ 					});
+ 				});
+@@ -1026,9 +1028,10 @@ ${other}`);
+ 	isChild() {
+ 		return !!this.parentCompilation;
+ 	}
+-
++	// 保持 compilation 对象的唯一性
+ 	createCompilation() {
+ 		this._cleanupLastCompilation();
++		// 这个 return show 了
+ 		return (this._lastCompilation = new Compilation(this));
+ 	}
+ 
+@@ -1040,7 +1043,9 @@ ${other}`);
+ 		const compilation = this.createCompilation();
+ 		compilation.name = this.name;
+ 		compilation.records = this.records;
++		// thisCompilation 的hook
+ 		this.hooks.thisCompilation.call(compilation, params);
++		// compilation 的 hook
+ 		this.hooks.compilation.call(compilation, params);
+ 		return compilation;
+ 	}
+@@ -1056,16 +1061,18 @@ ${other}`);
+ 			layers: this.options.experiments.layers
+ 		});
+ 		this._lastNormalModuleFactory = normalModuleFactory;
++		// 调用 normalModuleFactory 传入 normalModuleFactory 类 作为参数 【套娃🪆开始】
+ 		this.hooks.normalModuleFactory.call(normalModuleFactory);
+ 		return normalModuleFactory;
+ 	}
+ 
+ 	createContextModuleFactory() {
+ 		const contextModuleFactory = new ContextModuleFactory(this.resolverFactory);
++		// 调用 contextModuleFactory 传入 contextModuleFactory 类 作为参数 【套娃🪆开始】
+ 		this.hooks.contextModuleFactory.call(contextModuleFactory);
+ 		return contextModuleFactory;
+ 	}
+-
++	// 开始编译 beforeCompile 之前的 参数填充
+ 	newCompilationParams() {
+ 		const params = {
+ 			normalModuleFactory: this.createNormalModuleFactory(),
+@@ -1079,22 +1086,26 @@ ${other}`);
+ 	 * @returns {void}
+ 	 */
+ 	compile(callback) {
++		// 编译正式开始 😊
+ 		const params = this.newCompilationParams();
++		// 触发 编译开始之前 的 hook
+ 		this.hooks.beforeCompile.callAsync(params, err => {
+ 			if (err) return callback(err);
+-
++			// 调用 compile hook 并传入参数
+ 			this.hooks.compile.call(params);
+-
++			// 创建 compilation 对象
+ 			const compilation = this.newCompilation(params);
+ 
+ 			const logger = compilation.getLogger("webpack.Compiler");
+ 
+ 			logger.time("make hook");
++			// 回到 compiler 函数中 调用 make 的 hook
+ 			this.hooks.make.callAsync(compilation, err => {
+ 				logger.timeEnd("make hook");
+ 				if (err) return callback(err);
+ 
+ 				logger.time("finish make hook");
++				// 调用 finishMake 的 hook
+ 				this.hooks.finishMake.callAsync(compilation, err => {
+ 					logger.timeEnd("finish make hook");
+ 					if (err) return callback(err);
+@@ -1111,6 +1122,7 @@ ${other}`);
+ 								if (err) return callback(err);
+ 
+ 								logger.time("afterCompile hook");
++								// 调用 afterCompile 结束编译的  hook
+ 								this.hooks.afterCompile.callAsync(compilation, err => {
+ 									logger.timeEnd("afterCompile hook");
+ 									if (err) return callback(err);
+@@ -1137,6 +1149,7 @@ ${other}`);
+ 			});
+ 			return;
+ 		}
++		// 关闭资源的hook
+ 		this.hooks.shutdown.callAsync(err => {
+ 			if (err) return callback(err);
+ 			// Get rid of reference to last compilation to avoid leaking memory
+diff --git a/node_modules/webpack/lib/node/NodeEnvironmentPlugin.js b/node_modules/webpack/lib/node/NodeEnvironmentPlugin.js
+index 7d53eb1..d76fa24 100644
+--- a/node_modules/webpack/lib/node/NodeEnvironmentPlugin.js
++++ b/node_modules/webpack/lib/node/NodeEnvironmentPlugin.js
+@@ -13,7 +13,7 @@ const nodeConsole = require("./nodeConsole");
+ 
+ /** @typedef {import("../../declarations/WebpackOptions").InfrastructureLogging} InfrastructureLogging */
+ /** @typedef {import("../Compiler")} Compiler */
+-
++// webpack 基础环境的赋值
+ class NodeEnvironmentPlugin {
+ 	/**
+ 	 * @param {Object} options options
+@@ -41,6 +41,7 @@ class NodeEnvironmentPlugin {
+ 					stream: infrastructureLogging.stream
+ 				})
+ 		});
++		// 此处开始Compiler 的赋值操作
+ 		compiler.inputFileSystem = new CachedInputFileSystem(fs, 60000);
+ 		const inputFileSystem = compiler.inputFileSystem;
+ 		compiler.outputFileSystem = fs;
+@@ -48,6 +49,7 @@ class NodeEnvironmentPlugin {
+ 		compiler.watchFileSystem = new NodeWatchFileSystem(
+ 			compiler.inputFileSystem
+ 		);
++		// 调用 beforeRun 的 hook
+ 		compiler.hooks.beforeRun.tap("NodeEnvironmentPlugin", compiler => {
+ 			if (compiler.inputFileSystem === inputFileSystem) {
+ 				compiler.fsStartTime = Date.now();
+diff --git a/node_modules/webpack/lib/webpack.js b/node_modules/webpack/lib/webpack.js
+index 10d6485..2ce6724 100644
+--- a/node_modules/webpack/lib/webpack.js
++++ b/node_modules/webpack/lib/webpack.js
+@@ -59,15 +59,21 @@ const createMultiCompiler = (childOptions, options) => {
+  * @returns {Compiler} a compiler
+  */
+ const createCompiler = rawOptions => {
++	// 传入原始配置 -》 经过校验的配置
+ 	const options = getNormalizedWebpackOptions(rawOptions);
++	// 应用webpack 基础配置
+ 	applyWebpackOptionsBaseDefaults(options);
++	// 创建 Compiler 对象 后续会 根据 watch 来判断 调用watch 或者 run 方法
+ 	const compiler = new Compiler(options.context);
+ 	compiler.options = options;
++	// 应用node 环境的插件
+ 	new NodeEnvironmentPlugin({
+ 		infrastructureLogging: options.infrastructureLogging
+ 	}).apply(compiler);
++	// 配置中 存在 plugins 
+ 	if (Array.isArray(options.plugins)) {
+ 		for (const plugin of options.plugins) {
++			// 判断 plugins 是构造函数 还是 ES6 类
+ 			if (typeof plugin === "function") {
+ 				plugin.call(compiler, compiler);
+ 			} else {
+@@ -75,10 +81,14 @@ const createCompiler = rawOptions => {
+ 			}
+ 		}
+ 	}
++	// 应用 webpack 默认配置
+ 	applyWebpackOptionsDefaults(options);
++	// 调用 环境相关的hook
+ 	compiler.hooks.environment.call();
+ 	compiler.hooks.afterEnvironment.call();
++	// WebpackOptionsApply 内部 会根据 配置 注入 各种webpack 内置的插件
+ 	new WebpackOptionsApply().process(options, compiler);
++	// 初始化webpack完成后 调用 initialize
+ 	compiler.hooks.initialize.call();
+ 	return compiler;
+ };
+@@ -136,6 +146,7 @@ const webpack = /** @type {WebpackFunctionSingle & WebpackFunctionMulti} */ (
+ 				if (watch) {
+ 					compiler.watch(watchOptions, callback);
+ 				} else {
++					// 走 run 方法 传入回调函数
+ 					compiler.run((err, stats) => {
+ 						compiler.close(err2 => {
+ 							callback(err || err2, stats);

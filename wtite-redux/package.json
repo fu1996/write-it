@@ -1,0 +1,21 @@
+{
+  "name": "test-redux",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "demo1": "npx babel-node --presets env composeReducerDemo.js",
+    "demo2": "npx babel-node --presets env index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/plugin-proposal-decorators": "^7.17.8",
+    "@babel/plugin-proposal-export-default-from": "^7.16.7",
+    "babel-cli": "^6.26.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.7.0"
+  }
+}
