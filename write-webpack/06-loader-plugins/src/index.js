@@ -1,7 +1,8 @@
 import app from './c.app'
 import h5 from './test-dir/c.h5'
 // import c from './c'
-
+import './1.less';
+import './2.css';
 console.log({app})
 console.log({h5});
 // console.log({c});

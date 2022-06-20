@@ -60,10 +60,24 @@ module.exports = smp.wrap({
             //         path.resolve(__dirname, 'loaders/customLoader')
             //     ]
             // },
-            // {
-            //     test: /\.css$/,
-            //     use: ['style-loader', 'css-loader', 'less-loader']
-            // },
+            {
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader', {
+                    loader: path.resolve(__dirname, 'loaders/afterBabel'),
+                    options: {
+                        colorMap: require('./config/index'),
+                    }
+                },]
+            },
+            {
+                test: /\.less$/,
+                use: ['style-loader', 'css-loader', 'less-loader', {
+                    loader: path.resolve(__dirname, 'loaders/afterBabel'),
+                    options: {
+                        colorMap: require('./config/index'),
+                    }
+                },]
+            },
             // {
             //     test: /\.less$/,
             //     use: ['style-loader', 'css-loader', 'less-loader']
@@ -132,9 +146,9 @@ module.exports = smp.wrap({
         //     contextRegExp: /moment/,
         //     resourceRegExp: /\.\/locale/,
         // }),
-        // new HtmlWebpackPlugin({
-        //     template: './public/index.html',
-        //     filename: 'index.html',
-        // })
+        new HtmlWebpackPlugin({
+            template: './public/index.html',
+            filename: 'index.html',
+        })
     ],
 })

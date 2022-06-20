@@ -10,7 +10,8 @@
      }
  }
 
- let e = new SyncHook(['name'])
+let e = new SyncHook(['name'])
+
 e.tap('react', (name) => {
     console.log('react', name)
 })
