@@ -86,41 +86,6 @@
 /************************************************************************/
 /******/ ({
 
-/***/ "./src/a.js":
-/*!******************!*\
-  !*** ./src/a.js ***!
-  \******************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony default export */ __webpack_exports__[\"default\"] = ('a');\n\n//# sourceURL=webpack:///./src/a.js?");
-
-/***/ }),
-
-/***/ "./src/b.jsx":
-/*!*******************!*\
-  !*** ./src/b.jsx ***!
-  \*******************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony default export */ __webpack_exports__[\"default\"] = ('bbb');\n\n//# sourceURL=webpack:///./src/b.jsx?");
-
-/***/ }),
-
-/***/ "./src/foo/foo.h5.js":
-/*!***************************!*\
-  !*** ./src/foo/foo.h5.js ***!
-  \***************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-eval("console.log('h5')\n\n//# sourceURL=webpack:///./src/foo/foo.h5.js?");
-
-/***/ }),
-
 /***/ "./src/index.h5.js":
 /*!*************************!*\
   !*** ./src/index.h5.js ***!
@@ -129,7 +94,7 @@ eval("console.log('h5')\n\n//# sourceURL=webpack:///./src/foo/foo.h5.js?");
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _a__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./a */ \"./src/a.js\");\n/* harmony import */ var _foo__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./foo */ \"./src/foo/foo.h5.js\");\n/* harmony import */ var _foo__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_foo__WEBPACK_IMPORTED_MODULE_1__);\n/* harmony import */ var _b__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./b */ \"./src/b.jsx\");\n\n\nconsole.log('2222',_a__WEBPACK_IMPORTED_MODULE_0__[\"default\"])\n\n\n\n\n\nconsole.log('b',_b__WEBPACK_IMPORTED_MODULE_2__[\"default\"])\n\n//# sourceURL=webpack:///./src/index.h5.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n!(function webpackMissingModule() { var e = new Error(\"Cannot find module './foo'\"); e.code = 'MODULE_NOT_FOUND'; throw e; }());\n// import a from './a'\n\n// console.log('2222',a)\n\n\n\n\n// import b from './b'\n// console.log('b',b)\n\n//# sourceURL=webpack:///./src/index.h5.js?");
 
 /***/ })
 

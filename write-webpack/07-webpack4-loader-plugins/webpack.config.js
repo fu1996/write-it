@@ -1,5 +1,3 @@
-
-
 const A = require("./plugins/A")
 const MyExampleWebpackPlugin = require("./plugins/MyExampleWebpackPlugin")
 const FileListPlugin = require('./plugins/FileListPlugin')
@@ -14,7 +12,9 @@ module.exports = {
     mode: 'development',
     resolve: {
         extensions: ['.js', '.jsx'],
-        plugins:[new ResolvePathPlugin(true),new ResolvePlugin({honorIndex:true, includeFileSuffix: ['.js', '.jsx'], targetFileSuffix: 'h5'})]
+        // plugins:[new ResolvePathPlugin(true)]
+        // plugins:[new ResolvePathPlugin(true),new ResolvePlugin({honorIndex:true, includeFileSuffix: ['.js', '.jsx'], targetFileSuffix: 'h5'})]
+        plugins:[new ResolvePlugin({honorIndex:true, includeFileSuffix: ['.js', '.jsx'], targetFileSuffix: 'h5'})]
     }
     // plugins: [
     //     new MyPlugin(),
