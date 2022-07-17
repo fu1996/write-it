@@ -1,9 +1,6 @@
-// index.js
-// let bad = true;
-// const square = n => n * n;
-{
-  /* <Input placeholder={`请输入${label}，你好啊`} a="123" /> */
-} // console.log("================================");
+function newSquare(n, left) {
+  return left ** n;
+}
 
-replaceFoo !== bar;
-a = 123;
+const a = 2;
+console.log(newSquare(a, 222));

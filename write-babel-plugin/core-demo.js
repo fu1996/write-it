@@ -6,7 +6,8 @@ const fs = require("fs");
 babel.transformFileAsync('./index.js', {
     // plugins: [path.join(__dirname,'./plugin2.js')],
     // plugins: [path.join(__dirname,'./delete-console-plugin.js')],
-    plugins: [path.join(__dirname,'./foo-bar-plugin.js')],
+    // plugins: [path.join(__dirname,'./foo-bar-plugin.js')],
+    plugins: [path.join(__dirname,'./square-plugin.js')],
 }).then(res => {
     console.log(res.code);
     // 转换后的代码 写入 dist.js 文件
