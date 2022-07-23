@@ -1,64 +1,133 @@
+const ProgramKeyword = {
+    Print: 'print',
+    Var: 'var',
+}
+
+const TokenTypes = {
+    String: "string",
+    Print: "print",
+    Varchar: "varchar",
+    Identifier: "identifier", // 定义
+    Operator: "operator", // 运算符
+    Expression: "expression", // 使用 变量
+}
+
+const OperatorTypes = {
+    Eq: '=',
+}
+
 class Magenta {
-    constructor(codes) {
+    constructor(codes = '') {
         this.codes = codes;
     }
-    // 词法解析
+    // 将一个 一个的字符 变为 一套可读的有逻辑的 程序 数据结构
     tokenize() {
-        const length = this.codes.length;
-        // 记录当前 解析的 位置
+        let length = this.codes.length
+        console.log(length)
+        // 记录当前解析的位置 行号 列号 和 字符串的位置
+        let column = 1;
+        let line = 1;
         let pos = 0;
-        let tokens = [];
-        const BUILT_IN_KEYWORDS = ['print'];
         // 允许 的 keyword 的字符
         const varChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_'
+        // 存储 解析出的 tokens
+        const tokens = [];
+        // 要一个字 一个字的 解析 使用 while 合适一些
         while (pos < length) {
             let currentChar = this.codes[pos];
-            // 如果 当前解析的字符是 空格 或者 换行 则 继续
-            if (currentChar === ' ' || currentChar === '\n') {
+            // 判断是不是换行符
+            if (currentChar === '\n' || currentChar === ' ') {
+                currentChar === '\n' ? line++ : '';
                 pos++;
+                currentChar === '\n' ? column=1 : column++;
                 continue;
-            } else if (currentChar === '"') {
-                // 如果当前的 是字符 "
-                let res = "";
+            }
+            // 进入 字符串的解析逻辑
+            if (currentChar === '"') {
+                let res = '';
                 pos++;
-                while (this.codes[pos] !== '"' && this.codes[pos] !== '\n' && pos < length) {
-                    // 此处的判断是为了 提取出 ”“ 包含的文本字符
+                column++;
+                let startPos = column;
+                while (varChars.includes(this.codes[pos]) || this.codes[pos] === ' ') {
                     res += this.codes[pos];
                     pos++;
+                    column++;
                 }
-                // 可能存在语法错误 循环结束 依然 没有发现 " 作为结尾
-                if (this.codes[pos] !== '"') {
-                    return {
-                        error: '错误的语法，在pos' + pos
-                    }
+                let endPos = column;
+                if (this.codes[pos] === '"') {
+                    pos++;
+                    column++;
+                    tokens.push({
+                        type: TokenTypes.String,
+                        value: res,
+                        startPos,
+                        endPos,
+                        line,
+                        column,
+                    })
                 }
-                pos++
-                // 当前解析的语法结果放入 token 里
+            } else if (currentChar === '=') {
+                let startPos = column;
+                pos++;
+                column++;
+                let endPos = column;
                 tokens.push({
-                    type: 'string',
-                    value: res,
+                    type: TokenTypes.Operator,
+                    value: OperatorTypes.Eq,
+                    startPos,
+                    endPos,
+                    line,
+                    column,
                 })
             } else if (varChars.includes(currentChar)) {
+                // 不是变量
                 let res = currentChar;
-                pos++
-                // 当 当前解析的字符是 普通字符时候
-                while (varChars.includes(this.codes[pos]) && pos < length) {
+                let startPos = column;
+                pos++;
+                column++;
+                while (varChars.includes(this.codes[pos])) {
                     res += this.codes[pos];
                     pos++;
+                    column++;
                 }
-                // 如果 不是内置关键字的话
-                if (!BUILT_IN_KEYWORDS.includes(res)) {
-                    return {
-                        error: `语法错误：${res},位置在：${pos}`
-                    }
-                }
-                tokens.push({
-                    type: "keyword",
-                    value: res
-                })
-            } else {
-                return {
-                    error: `错误的字符： ${this.codes[pos]}`
+                let endPos = column;
+                console.log('字符串的解析', res);
+                if (res === ProgramKeyword.Print) {
+                    tokens.push({
+                        type: TokenTypes.Print,
+                        value: res,
+                        startPos,
+                        endPos,
+                        line,
+                        column,
+                    })
+                } else if (res === ProgramKeyword.Var) {
+                    tokens.push({
+                        type: TokenTypes.Varchar,
+                        value: res,
+                        startPos,
+                        endPos,
+                        line,
+                        column,
+                    })
+                } else if (tokens[tokens.length - 1].type === TokenTypes.Varchar) {
+                    tokens.push({
+                        type: TokenTypes.Identifier,
+                        value: res,
+                        startPos,
+                        endPos,
+                        line,
+                        column,
+                    })
+                } else {
+                    tokens.push({
+                        type: TokenTypes.Expression,
+                        value: res,
+                        startPos,
+                        endPos,
+                        line,
+                        column,
+                    })
                 }
             }
         }
@@ -67,44 +136,10 @@ class Magenta {
             tokens,
         }
     }
-    // 语法解析
-    parse(tokens) {
-        const len = tokens.length;
-        let pos = 0;
-        while (pos < len) {
-            const token = tokens[pos];
-            // 如果是 print 关键字
-            if (token.type === "keyword" && token.value === "print") {
-                // 如果下一个 token 不存在
-                if (!tokens[pos + 1]) {
-                    return console.log('当前行错误，期望的是字符串' + pos);
-                }
-                // 校验下一个 token 是否是 字符串
-                let isString = tokens[pos + 1].type === 'string';
-                if (!isString) {
-                    return console.log(`token 解析错误 ${tokens[pos + 1].type}，期望的是字符串`)
-                }
-                // 语法没有错误 输出
-                console.log('\x1b[35m%s\x1b[0m', tokens[pos + 1].value);
-                // pos 的位置增加2，2 代表的 是 print 一个 token 字符串 一个 token
-                pos+= 2
-            } else {
-                return console.log(`未匹配的token ${token.type}`)
-            }
-        }
-    }
     run() {
-        console.log(this.codes);
-        const {
-            tokens,
-            error,
-        } = this.tokenize();
-        if (error) {
-            console.log(error);
-            return
-        }
-        console.log(tokens);
-        this.parse(tokens)
+        console.log('输入的字符是\n' + this.codes);
+        const {tokens} = this.tokenize()
+        console.log(tokens)
     }
 }
 
