@@ -4,7 +4,8 @@
   "description": "1. 创造一门编程语言     https://css-taricks.com/lets-create-a-tiny-programming-language/",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --watch Magenta.js"
+    "dev": "nodemon --watch Magenta.js",
+    "build": "node index.js"
   },
   "keywords": [],
   "author": "",

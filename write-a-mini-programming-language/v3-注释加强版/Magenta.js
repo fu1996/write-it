@@ -20,7 +20,7 @@ class Magenta {
     constructor(codes = '') {
         this.codes = codes;
     }
-    // 将一个 一个的字符 变为 一套可读的有逻辑的 程序 数据结构
+    // 词法分析 （没加错误处理） 将一个 一个的字符 变为 一套可读的有逻辑的 程序 数据结构
     tokenize() {
         let length = this.codes.length
         console.log(length)
@@ -136,10 +136,86 @@ class Magenta {
             tokens,
         }
     }
+    // 语法分析
+    parse(tokens = []) {
+        console.log(tokens);
+        const len = tokens.length;
+        let pos = 0;
+        // 存储变量的值
+        const varObj = {};
+
+        while (pos < len) {
+            const currentToken = tokens[pos];
+            const {type, value} = currentToken;
+            // 判断是否是 print 语法
+            if (type === TokenTypes.Print && value === ProgramKeyword.Print) {
+                // 是print 语法 取 第二位
+                pos++;
+                const nextToken = tokens[pos];
+                const {type, value} = nextToken;
+                // 判断是否是字符串
+                if (type === TokenTypes.String) {
+                    console.log(value)
+                    pos++;
+                    continue;
+                } else if (type === TokenTypes.Expression) {
+                    // 判断是否是变量
+                    if (!value in varObj) {
+                        // 判断变量是否已经声明
+                        return console.log(`变量 ${value}未声明`)
+                    }
+                    console.log(varObj[value])
+                    pos++;
+                    continue;
+                }
+
+            } else if (type === TokenTypes.Varchar && value === ProgramKeyword.Var) {
+                pos++;
+                // var 的下一个 token
+                const nextToken = tokens[pos];
+                const {type: identifierType, value:varKey, column, line} = nextToken
+                const isIdentifier = identifierType === TokenTypes.Identifier;
+                if (!isIdentifier) {
+                    return console.log(`变量 ${varKey}有误，在 ${line}行 ${column}列，请检查`)
+                }
+                pos++;
+                // 判断运算符
+                const operatorToken = tokens[pos];
+                const {type:operatorType, value:eqValue, column:eqColumn, line:eqLine} = operatorToken;
+                const isEqualToken = operatorType === TokenTypes.Operator && eqValue === OperatorTypes.Eq;
+                if (!isEqualToken) {
+                    return console.log(`运算符 ${eqValue}有误，在 ${eqLine}行 ${eqColumn}列，请检查`)
+                }
+                pos++;
+                // 判断 赋值
+                const valueToken = tokens[pos];
+                const {type:valueType, value, column:valueColumn, line:valueLine} = valueToken;
+                //TODO: 可能存在二次 赋值 判断 此 token 是不是字符串。 上面的 tokenize 为处理 二次赋值的情况
+                // var a = "123";
+                // var b = a;
+                const isString = valueType === TokenTypes.String;
+                if (isString) {
+                    varObj[varKey] = value;
+                    pos++;
+                } else if (valueType === TokenTypes.Expression) {
+                    if (!value in varObj) {
+                        return console.log(`变量 ${varKey}未定义，在 ${valueLine}行 ${valueColumn}列，请检查`)
+                    }
+                    const realValue = varObj[value]
+                    varObj[varKey] = realValue;
+                    pos++;
+                } else {
+                    console.log(`未知的变量${varKey}`)
+                    break;
+                }
+            }
+        }
+
+    }
     run() {
         console.log('输入的字符是\n' + this.codes);
         const {tokens} = this.tokenize()
-        console.log(tokens)
+        this.parse(tokens);
     }
 }
 
