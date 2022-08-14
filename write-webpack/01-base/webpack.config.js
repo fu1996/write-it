@@ -51,7 +51,7 @@ module.exports = {
         path: path.resolve(__dirname, 'build'), // 此路径必须为绝对路径
     },
     devServer: { // 开发服务器配置  https://webpack.js.org/configuration/dev-server/#devserver
-        port: 3000, // 本地服务端口
+        port: 3001, // 本地服务端口
         // progress: true, // 显示进度
         compress: true,
         client: {
@@ -89,16 +89,16 @@ module.exports = {
                   exposes: ["$", "jQuery"],
                 },
               },
-            {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                use: {
-                    loader: 'eslint-loader', // babel 把es6 转为 es5
-                    options: {
-                        enforce: 'pre', // loader 的 优先级 最前 改变了 loader的执行顺序
-                    }
-                },
-            },
+            // {
+            //     test: /\.js$/,
+            //     exclude: /node_modules/,
+            //     use: {
+            //         loader: 'eslint-loader', // babel 把es6 转为 es5
+            //         options: {
+            //             enforce: 'pre', // loader 的 优先级 最前 改变了 loader的执行顺序
+            //         }
+            //     },
+            // },
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
@@ -106,7 +106,7 @@ module.exports = {
                     loader: 'babel-loader', // babel 把es6 转为 es5
                     options: {
                         presets: ['@babel/preset-env'],
-                        plugins: ["@babel/plugin-transform-runtime"]
+                        plugins: ["@babel/plugin-transform-runtime", [require('./babel-plugins/test'), {IMPORT_NAME: 'b', SOURCE: path.join(__dirname, './src/b')}]]
                     }
                 }
             },

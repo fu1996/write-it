@@ -1,22 +1,16 @@
-import logo from './test.png'
-let image = new Image();
-image.src = logo
-document.body.appendChild(image)
-// console.log('111', $)
-// const str = require('./a')
+const aa = () => {
+    console.log('箭头函数')
+}
 
-// console.log('hello' + str);
+aa();
 
-// require('./index.css')
+console.log('import', b);
 
-// require('./index.less')
-
-// const aa = () => {
-//     console.log('箭头函数')
-// }
-
-// aa();
-
+// setTimeout(() => {
+//     import('./c').then(module => {
+//         console.log('default', module.default);
+//     })
+// }, 5000)
 
 // class A {
 //     a = 1;

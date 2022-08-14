@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "babel:out": "babel index.js --out-file dist.js",
-    "babylon": "nodemon core-demo.js --ignore dist.js"
+    "babel:out": "../node_modules/.bin/babel index.js --out-file dist.js",
+    "babylon": "../node_modules/.bin/nodemon core-demo.js --ignore dist.js"
   },
   "keywords": [],
   "author": "",
